@@ -1,31 +1,58 @@
 import pygame, sys
-from pygame.locals import QUIT
+from pygame.locals import QUIT, KEYDOWN
 
 clock = pygame.time.Clock()
 
-screen = pygame.display.set_mode((800, 600))
-
-pygame.init()
-
-pygame.display.set_caption("Jogo teste")
+curr_frame = 0
 
 anim_time = 0
-c_frame = 0
-hero_walk_list = []
 
-for i in range(4):
-    hero_walk_list.append(pygame.image.load(f"assets/Hero_Walk_0{i + 1}.png"))
+pos_x = 100
+
+run_animation = False
+curr_frame_mm = 0
+anim_time_mm = 0
+
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption('Jogo teste')
+
+sprite_sheet = pygame.image.load("professor_walk_cycle_no_hat.png")
 
 while True:
-    for ev in pygame.event.get():
-        if pygame.event == QUIT:
+    for event in pygame.event.get():
+        if event.type == QUIT:
             pygame.quit()
             sys.exit()
+
+        if event.type == KEYDOWN:
+            if event.key == pygame.K_d:
+                run_animation = True
+                pos_x = pos_x + 5
 
     clock.tick(60)
     dt = clock.get_time()
 
+    if run_animation:
+        anim_time_mm = anim_time_mm + dt
+        anim_time_mm_sec = anim_time_mm / 1000
 
-    c_frame = c_frame + 1
-    if c_frame > len(hero_walk_list) - 1:
-        c_frame = 0
+        if anim_time_mm_sec > 0.1:
+            curr_frame_mm = curr_frame_mm + 1
+            pos_x = pos_x + 6.25
+
+            if curr_frame_mm > 9:
+                curr_frame_mm = 0
+                run_animation = False
+
+            anim_time_mm = 0
+
+    # Desenho dos elementos na tela
+    screen.fill((255,255,255))
+
+    if curr_frame_mm < 5:
+        screen.blit(sprite_sheet,(pos_x, 200),(64 * curr_frame_mm, 200, 64, 64))
+    else:
+        screen.blit(sprite_sheet,(pos_x, 200),(64 * (curr_frame_mm - 5), 200, 64, 64))
+
+    pygame.display.update()
