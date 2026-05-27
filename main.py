@@ -4,9 +4,8 @@ from pygame.locals import QUIT, KEYDOWN
 clock = pygame.time.Clock()
 
 curr_frame = 0
-
 anim_time = 0
-
+direita = 0
 pos_x = 100
 
 run_animation = False
@@ -29,6 +28,11 @@ while True:
             if event.key == pygame.K_d:
                 run_animation = True
                 pos_x = pos_x + 5
+                direita = 0
+            elif event.key == pygame.K_a:
+                run_animation = True
+                direita = 130
+                pos_x = pos_x - 5
 
     clock.tick(60)
     dt = clock.get_time()
@@ -39,7 +43,10 @@ while True:
 
         if anim_time_mm_sec > 0.1:
             curr_frame_mm = curr_frame_mm + 1
-            pos_x = pos_x + 6.25
+            if direita == 130:
+                pos_x = pos_x - 6.25
+            else:
+                pos_x = pos_x + 6.25
 
             if curr_frame_mm > 9:
                 curr_frame_mm = 0
@@ -51,8 +58,8 @@ while True:
     screen.fill((255,255,255))
 
     if curr_frame_mm < 5:
-        screen.blit(sprite_sheet,(pos_x, 200),(64 * curr_frame_mm, 200, 64, 64))
+        screen.blit(sprite_sheet,(pos_x, 200),(64 * curr_frame_mm, 200 - direita, 64, 64))
     else:
-        screen.blit(sprite_sheet,(pos_x, 200),(64 * (curr_frame_mm - 5), 200, 64, 64))
+        screen.blit(sprite_sheet,(pos_x, 200),(64 * (curr_frame_mm - 5), 200 - direita, 64, 64))
 
     pygame.display.update()
